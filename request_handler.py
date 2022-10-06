@@ -93,9 +93,22 @@ class HandleRequests(BaseHTTPRequestHandler):
             new_order = create_order(post_body)
             self.wfile.write(json.dumps(new_order).encode())
 
+ # A method that handles any PUT request.
     def do_PUT(self):
-        """Handles PUT requests to the server """
-        self.do_POST()
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single order from the list
+        if resource == "orders":
+            update_order(id, post_body)
+
+        # Encode the new order and send in response
+        self.wfile.write("".encode())
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
@@ -117,24 +130,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept')
         self.end_headers()
-
-     # A method that handles any PUT request.
-    def do_PUT(self):
-        self._set_headers(204)
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-        post_body = json.loads(post_body)
-
-        # Parse the URL
-        (resource, id) = self.parse_url(self.path)
-
-        # Delete a single order from the list
-        if resource == "orders":
-            update_order(id, post_body)
-
-        # Encode the new order and send in response
-        self.wfile.write("".encode())
-
 
     # ~ DELETE METHOD 
     def do_DELETE(self):
