@@ -1,9 +1,9 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_metals, get_single_metal
-from views import get_all_orders
+from views import get_all_orders, get_single_order
 from views import get_all_sizes, get_single_size
-from views import get_all_styles
+from views import get_all_styles, get_single_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -39,19 +39,37 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Parse the URL and capture the tuple that is returned
         (resource, id) = self.parse_url(self.path)
 
+        # GET metals
         if resource == "metals":
             if id is not None:
                 response = get_single_metal(id)
 
             else:
                 response = get_all_metals()
-            
+
+        # GET sizes
         if resource == "sizes":
             if id is not None:
                 response = get_single_size(id)
 
             else:
                 response = get_all_sizes()
+
+        # GET styles
+        if resource == "styles":
+            if id is not None:
+                response = get_single_style(id)
+
+            else:
+                response = get_all_styles()
+
+        # GET orders
+        if resource == "orders":
+            if id is not None:
+                response = get_single_order(id)
+
+            else:
+                response = get_all_orders()
 
         self.wfile.write(json.dumps(response).encode())
 
