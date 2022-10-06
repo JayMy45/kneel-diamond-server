@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_metals, get_single_metal
-from views import get_all_orders, get_single_order, create_order
+from views import get_all_orders, get_single_order, create_order, delete_order
 from views import get_all_sizes, get_single_size
 from views import get_all_styles, get_single_style
 
@@ -11,8 +11,8 @@ class HandleRequests(BaseHTTPRequestHandler):
     """
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
-        # path is "/animals/1", the resulting list will
-        # have "" at index 0, "animals" at index 1, and "1"
+        # path is "/orders/1", the resulting list will
+        # have "" at index 0, "orders" at index 1, and "1"
         # at index 2.
         path_params = path.split("/")
         resource = path_params[1]
@@ -24,9 +24,9 @@ class HandleRequests(BaseHTTPRequestHandler):
             # This is the new parseInt()
             id = int(path_params[2])
         except IndexError:
-            pass  # No route parameter exists: /animals
+            pass  # No route parameter exists: /orders
         except ValueError:
-            pass  # Request had trailing slash: /animals/
+            pass  # Request had trailing slash: /orders/
 
         return (resource, id)  # This is a tuple
   
@@ -118,6 +118,21 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
+        # * DELETE METHOD 
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single order from the list
+        if resource == "orders":
+            delete_order(id)
+
+        # Encode the new order and send in response
+        self.wfile.write("".encode())
+       
 
 
 # point of this application.
