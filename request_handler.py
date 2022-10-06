@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_metals, get_single_metal
-from views import get_all_orders, get_single_order, create_order, delete_order
+from views import get_all_orders, get_single_order, create_order, delete_order, update_order
 from views import get_all_sizes, get_single_size
 from views import get_all_styles, get_single_style
 
@@ -118,7 +118,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
-        # * DELETE METHOD 
+     # A method that handles any PUT request.
+    def do_PUT(self):
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single order from the list
+        if resource == "orders":
+            update_order(id, post_body)
+
+        # Encode the new order and send in response
+        self.wfile.write("".encode())
+
+
+    # ~ DELETE METHOD 
     def do_DELETE(self):
         # Set a 204 response code
         self._set_headers(204)
