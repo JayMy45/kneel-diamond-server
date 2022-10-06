@@ -1,39 +1,60 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals
+from views import get_all_metals, get_single_metal
 from views import get_all_orders
-from views import get_all_sizes
+from views import get_all_sizes, get_single_size
 from views import get_all_styles
 
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
+    def parse_url(self, path):
+        # Just like splitting a string in JavaScript. If the
+        # path is "/animals/1", the resulting list will
+        # have "" at index 0, "animals" at index 1, and "1"
+        # at index 2.
+        path_params = path.split("/")
+        resource = path_params[1]
+        id = None
 
+        # Try to get the item at index 2
+        try:
+            # Convert the string "1" to the integer 1
+            # This is the new parseInt()
+            id = int(path_params[2])
+        except IndexError:
+            pass  # No route parameter exists: /animals
+        except ValueError:
+            pass  # Request had trailing slash: /animals/
+
+        return (resource, id)  # This is a tuple
+  
     def do_GET(self):
         """Handles GET requests to the server """
         self._set_headers(200)
 
-        # GET metals
-        if self.path == "/metals":
-            response = get_all_metals()
+        response = {}  # Default response
 
-        # GET orders
-        elif self.path == "/orders":
-            response = get_all_orders()
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
 
-        # GET sizes
-        elif self.path == "/sizes":
-            response = get_all_sizes()
+        if resource == "metals":
+            if id is not None:
+                response = get_single_metal(id)
 
-        # GET styles
-        elif self.path == "/styles":
-            response = get_all_styles()
+            else:
+                response = get_all_metals()
+            
+        if resource == "sizes":
+            if id is not None:
+                response = get_single_size(id)
 
-        else:
-            response = []
+            else:
+                response = get_all_sizes()
 
         self.wfile.write(json.dumps(response).encode())
+
 
     def do_POST(self):
         """Handles POST requests to the server """
