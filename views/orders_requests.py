@@ -1,3 +1,9 @@
+from views.sizes_requests import get_single_size
+from views.styles_requests import get_single_style
+from views.metal_request import get_single_metal
+
+# from sizes_requests import get_single_size
+
 ORDERS = [
     {
         "id": 1,
@@ -24,6 +30,25 @@ def get_single_order(id):
     for order in ORDERS:
         if order["id"] == id:
             requested_order = order
+            #~* be sure to indent matching below with line of code above
+
+            #! update single order to include metal details in place of metalId
+            # 1. store matching metal in variable (invoke get_single_metal passing request_order Key: metalId]
+            matching_metals = get_single_metal(requested_order["metalId"])
+            # 2. store results in new key add to requested_order variable.
+            requested_order["metal"] = matching_metals
+            # 3. delete metalId key using del keyword (use order as it is the iterator)
+            del order["metalId"]
+
+            #! update single order to include metal details in place of metalId
+            matching_styles = get_single_style(requested_order["styleId"])
+            requested_order["style"] = matching_styles
+            del order["styleId"]
+
+            #! update single order to include metal details in place of metalId
+            matching_sizes = get_single_size(requested_order["sizeId"])
+            requested_order["size"] = matching_sizes
+            del order["sizeId"]
 
     return requested_order
 
