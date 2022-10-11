@@ -32,7 +32,7 @@ class HandleRequests(BaseHTTPRequestHandler):
   
     def do_GET(self):
         """Handles GET requests to the server """
-        self._set_headers(200)
+        # self._set_headers(200)
 
         response = {}  # Default response
 
@@ -44,7 +44,19 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_metal(id)
 
+                #~ if there is a response from a single metal then set the status header to 200
+                #~ meaning available id...
+                if response is not None:
+                    self._set_headers(200)
+
+                #~ if not then set the status header to 404
+                else:
+                    self._set_headers(404)
+                    response = { "message": f"Metals #{id} is not available" }
+
             else:
+                #whenever header isn't initialized at the have to set status at every response
+                self._set_headers(200)
                 response = get_all_metals()
 
         # GET sizes
@@ -52,15 +64,29 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_size(id)
 
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Sizes #{id} is not available."}
+
             else:
+                self._set_headers(200)
                 response = get_all_sizes()
 
         # GET styles
         if resource == "styles":
             if id is not None:
-                response = get_single_style(id)
+                response = get_single_style(id)  #* after you get this response then you can create a conditional to determine the status code updates
+                
+                if response is not None:
+                    self._set_headers(200)
+                else: 
+                    self._set_headers(404)
+                    response =  {"message": f"Style #{id} is not available"}
 
             else:
+                self._set_headers(200)
                 response = get_all_styles()
 
         # GET orders
@@ -68,7 +94,14 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_order(id)
 
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Order #{id} is not available"}
+
             else:
+                self._set_headers(404)
                 response = get_all_orders()
 
         self.wfile.write(json.dumps(response).encode())
