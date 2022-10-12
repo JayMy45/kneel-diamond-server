@@ -108,7 +108,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        self._set_headers(201)
+        # self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
 
@@ -123,25 +123,35 @@ class HandleRequests(BaseHTTPRequestHandler):
   
         # Add a new order to the list. 
         if resource == "orders":
-            new_order = create_order(post_body)
+            if "styleId" in post_body and "sizeId" in post_body and "metalId" in post_body and "timestamp" in post_body:
+                self._set_headers(201)
+                new_order = create_order(post_body)
+
+            else:
+                self._set_headers(400)
+                new_order = { 
+                    "message": f'{"Please enter a styleId" if "style #id" not in post_body else ""} {"Please enter a sizeId" if "sizeId" not in post_body else ""} {"Please enter a metalId" if "metalId" not in post_body else ""} {"Please enter a timestamp" if "timestamp" not in post_body else ""}' 
+                    }
             self.wfile.write(json.dumps(new_order).encode())
 
  # A method that handles any PUT request.
     def do_PUT(self):
-        self._set_headers(204)
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-        post_body = json.loads(post_body)
+        self._set_headers(405)
+        # content_len = int(self.headers.get('content-length', 0))
+        # post_body = self.rfile.read(content_len)
+        # post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
+        response = None
+
         # Delete a single order from the list
         if resource == "orders":
-            update_order(id, post_body)
-
+            # update_order(id, post_body)
+            response = { "message": f"Once orders are processed updates are not allowed.  Please contact company for more details"}
         # Encode the new order and send in response
-        self.wfile.write("".encode())
+            self.wfile.write(json.dumps(response).encode())
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
