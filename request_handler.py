@@ -101,7 +101,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = {"message": f"Order #{id} is not available"}
 
             else:
-                self._set_headers(404)
+                self._set_headers(200)
                 response = get_all_orders()
 
         self.wfile.write(json.dumps(response).encode())
