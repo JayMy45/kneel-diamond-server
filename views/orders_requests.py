@@ -1,3 +1,5 @@
+import sqlite3
+import json
 from views.sizes_requests import get_single_size
 from views.styles_requests import get_single_style
 from views.metal_request import get_single_metal
@@ -22,7 +24,9 @@ ORDERS = [
 ]
 
 def get_all_orders():
-    return ORDERS
+    with sqlite3.connect("./kneel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+
 
 #refer to metal_request.py for function details
 def get_single_order(id):

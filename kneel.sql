@@ -1,3 +1,4 @@
+--Create All Tables
 CREATE TABLE `Orders`
 (
     `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -32,10 +33,20 @@ CREATE TABLE `Sizes`
     `price` NUMERIC(5,2) NOT NULL
 );
 
-
+--INSERT DATA
 --Data for Orders
-INSERT INTO `Orders` VALUES (null, 1, 3, 2, );
-INSERT INTO `Orders` VALUES (null, 2, 1, 1);
+INSERT INTO `Orders` VALUES (null, 1, 3, 2, 6712.42, 1665087278);
+INSERT INTO `Orders` VALUES (null, 2, 1, 1, 2536.4, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 5, 3, 3, 5341, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 5, 1, 2, 6941, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 4, 3, 2, 7495.45, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 3, 3, 2, 7958.9, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 1, 1, 1, 1812.42, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 4, 1, 1, 2595.45, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 3, 3, 3, 5258.90, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 2, 3, 1, 3536.4, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 1, 1, 3, 1812.42, 1665087278 );
+INSERT INTO `Orders` VALUES (null, 4, 3, 2, 7495.45, 1665087278 );
 
 
 --Data for Metals
@@ -51,7 +62,7 @@ INSERT INTO `Styles` VALUES (null, 'Princess', 1000);
 INSERT INTO `Styles` VALUES (null, 'Emerald', 1500);
 
 --Data for Sizes
-INSERT INTO `Sizes` VALUES (null, 1, 1, 1300);
+INSERT INTO `Sizes` VALUES (null, 1, 1300);
 INSERT INTO `Sizes` VALUES (null, 4, 5200);
 INSERT INTO `Sizes` VALUES (null, 2, 2600);
 
