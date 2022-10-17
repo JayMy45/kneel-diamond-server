@@ -25,6 +25,7 @@ ORDERS = [
     } 
 ]
 
+# Get All Orders (GET)
 def get_all_orders():
     with sqlite3.connect("./kneel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -57,7 +58,7 @@ def get_all_orders():
     
     return orders
 
-#Get Single order
+# Get Single order (GET)
 def get_single_order(id):
        with sqlite3.connect("./kneel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -88,6 +89,7 @@ def get_single_order(id):
                            
         return order.__dict__   
 
+# Create New Orders (POST)
 def create_order(new_order):
     with sqlite3.connect("./kneel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -108,8 +110,7 @@ def create_order(new_order):
 
     return new_order
 
-
-
+# Delete Single Orders (DELETE)
 def delete_order(id):
     with sqlite3.connect("./kneel.sqlite3") as conn:
         db_cursor = conn.cursor()
@@ -118,7 +119,7 @@ def delete_order(id):
         WHERE id = ?
         """, (id,))
 
-
+# Update Orders (PUT)
 def update_order(id, new_order):
     # Iterate the ANIMALS list, but use enumerate() so that
     # you can access the index value of each item.
