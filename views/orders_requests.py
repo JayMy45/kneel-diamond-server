@@ -1,5 +1,6 @@
 import sqlite3
 import json
+from models import Orders
 from views.sizes_requests import get_single_size
 from views.styles_requests import get_single_style
 from views.metal_request import get_single_metal
@@ -26,6 +27,34 @@ ORDERS = [
 def get_all_orders():
     with sqlite3.connect("./kneel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT
+            o.id,
+            o.style_id,
+            o.size_id,
+            o.metal_id,
+            o.price,
+            o.timestamp
+        FROM Orders o
+        """)
+
+        orders = []
+
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            order = Orders(row['id'],
+                           row['style_id'],
+                           row['size_id'],
+                           row['metal_id'],
+                           row['price'],
+                           row['timestamp'])
+                           
+            orders.append(order.__dict__)
+    
+    return orders
 
 
 #refer to metal_request.py for function details

@@ -3,9 +3,10 @@ class Orders():
     # Class initializer. It has 5 custom parameters, with the
     # special `self` parameter that every method on a class
     # needs as the first parameter.
-    def __init__(self, id, styleId, sizeId, metalId, timestamp):
+    def __init__(self, id, style_id, size_id, metal_id, price, timestamp):
         self.id = id
-        self.styleId = styleId
-        self.sizeId = sizeId
-        self.metalId = metalId
+        self.style_id = style_id
+        self.size_id = size_id
+        self.metal_id = metal_id
+        self.price = price
         self.timestamp = timestamp
