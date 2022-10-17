@@ -123,7 +123,7 @@ class HandleRequests(BaseHTTPRequestHandler):
   
         # Add a new order to the list. 
         if resource == "orders":
-            if "styleId" in post_body and "sizeId" in post_body and "metalId" in post_body and "timestamp" in post_body:
+            if "style_id" in post_body and "size_id" in post_body and "metal_id" in post_body and "timestamp" in post_body:
                 self._set_headers(201)
                 new_order = create_order(post_body)
 

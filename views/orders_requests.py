@@ -1,3 +1,4 @@
+from hashlib import new
 import sqlite3
 import json
 from models import Orders
@@ -85,41 +86,37 @@ def get_single_order(id):
                         data['price'],
                         data['timestamp'])
                            
-        return order.__dict__
-    
+        return order.__dict__   
 
+def create_order(new_order):
+    with sqlite3.connect("./kneel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-def create_order(order):
-    # Get the id value of the last order in the list
-    max_id = ORDERS[-1]["id"]
+        db_cursor.execute("""
+        INSERT INTO Orders
+            (style_id, size_id, metal_id, price, timestamp)
+        VALUES
+            ( ?, ?, ?, ?, ?);
+        """, (new_order['style_id'],
+              new_order['size_id'],
+              new_order['metal_id'],
+              new_order['price'],
+              new_order['timestamp'], ))
+        id = db_cursor.lastrowid
+        new_order['id'] = id
 
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
+    return new_order
 
-    # Add an `id` property to the order dictionary
-    order["id"] = new_id
-
-    # Add the order dictionary to the list
-    ORDERS.append(order)
-
-    #  Return the dictionary with `id` property added
-    return order
 
 
 def delete_order(id):
-    # Initial -1 value for order index, in case one isn't found
-    order_index = -1
-
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, order in enumerate(ORDERS):
-        if order["id"] == id:
-            # Found the order. Store the current index.
-            order_index = index
-
-    # If the order was found, use pop(int) to remove it from list
-    if order_index >= 0:
-        ORDERS.pop(order_index)
+    with sqlite3.connect("./kneel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        DELETE FROM orders
+        WHERE id = ?
+        """, (id,))
 
 
 def update_order(id, new_order):
