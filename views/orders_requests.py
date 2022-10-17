@@ -56,34 +56,38 @@ def get_all_orders():
     
     return orders
 
-
-#refer to metal_request.py for function details
+#Get Single order
 def get_single_order(id):
-    requested_order = None
-    for order in ORDERS:
-        if order["id"] == id:
-            requested_order = order
-            #~* be sure to indent matching below with line of code above
+       with sqlite3.connect("./kneel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-            #! update single order to include metal details in place of metalId
-            # 1. store matching metal in variable (invoke get_single_metal passing request_order Key: metalId]
-            matching_metals = get_single_metal(requested_order["metalId"])
-            # 2. store results in new key add to requested_order variable.
-            requested_order["metal"] = matching_metals
-            # 3. delete metalId key using del keyword (use order as it is the iterator)
-            del order["metalId"]
+        db_cursor.execute("""
+        SELECT
+            o.id,
+            o.style_id,
+            o.size_id,
+            o.metal_id,
+            o.price,
+            o.timestamp
+        FROM Orders o
+        WHERE o.id = ?
+        """, ( id, ))
 
-            #! update single order to include metal details in place of metalId
-            matching_styles = get_single_style(requested_order["styleId"])
-            requested_order["style"] = matching_styles
-            del order["styleId"]
+        data = []
 
-            #! update single order to include metal details in place of metalId
-            matching_sizes = get_single_size(requested_order["sizeId"])
-            requested_order["size"] = matching_sizes
-            del order["sizeId"]
+        data = db_cursor.fetchone()
 
-    return requested_order
+        order = Orders(data['id'],
+                        data['style_id'],
+                        data['size_id'],
+                        data['metal_id'],
+                        data['price'],
+                        data['timestamp'])
+                           
+        return order.__dict__
+    
+
 
 def create_order(order):
     # Get the id value of the last order in the list
@@ -126,3 +130,42 @@ def update_order(id, new_order):
             # Found the order. Update the value.
             ORDERS[index] = new_order
             break 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def get_single_order(id):
+#     requested_order = None
+#     for order in ORDERS:
+#         if order["id"] == id:
+#             requested_order = order
+#             #~* be sure to indent matching below with line of code above
+
+#             #! update single order to include metal details in place of metalId
+#             # 1. store matching metal in variable (invoke get_single_metal passing request_order Key: metalId]
+#             matching_metals = get_single_metal(requested_order["metalId"])
+#             # 2. store results in new key add to requested_order variable.
+#             requested_order["metal"] = matching_metals
+#             # 3. delete metalId key using del keyword (use order as it is the iterator)
+#             del order["metalId"]
+
+#             #! update single order to include metal details in place of metalId
+#             matching_styles = get_single_style(requested_order["styleId"])
+#             requested_order["style"] = matching_styles
+#             del order["styleId"]
+
+#             #! update single order to include metal details in place of metalId
+#             matching_sizes = get_single_size(requested_order["sizeId"])
+#             requested_order["size"] = matching_sizes
+#             del order["sizeId"]
+
+#     return requested_order
