@@ -1,8 +1,8 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_single_metal
+from views import get_all_metals, get_single_metal, update_metal
 from views import get_all_orders, get_single_order, create_order, delete_order, update_order
-from views import get_all_sizes, get_single_size
+from views import get_all_sizes, get_single_size, update_size
 from views import get_all_styles, get_single_style
 
 
@@ -30,6 +30,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         return (resource, id)  # This is a tuple
   
+
     def do_GET(self):
         """Handles GET requests to the server """
         # self._set_headers(200)
@@ -136,22 +137,38 @@ class HandleRequests(BaseHTTPRequestHandler):
 
  # A method that handles any PUT request.
     def do_PUT(self):
-        self._set_headers(405)
-        # content_len = int(self.headers.get('content-length', 0))
-        # post_body = self.rfile.read(content_len)
-        # post_body = json.loads(post_body)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        response = None
+        success = False
 
-        # Delete a single order from the list
         if resource == "orders":
-            # update_order(id, post_body)
-            response = { "message": f"Once orders are processed updates are not allowed.  Please contact company for more details"}
-        # Encode the new order and send in response
-            self.wfile.write(json.dumps(response).encode())
+            success = update_order(id, post_body)
+            if success:
+                self._set_headers(204)
+            else:
+                self._set_headers(404)
+        self.wfile.write("".encode())
+        
+        if resource == "metals":
+            success = update_metal(id, post_body)
+            if success:
+                self._set_headers(204)
+            else:
+                self._set_headers(404)
+        self.wfile.write("".encode())
+
+        if resource == "sizes":
+            success = update_size(id, post_body)
+            if success:
+                self._set_headers(204)
+            else:
+                self._set_headers(404)
+        self.wfile.write("".encode())
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin

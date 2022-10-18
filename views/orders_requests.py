@@ -1,4 +1,3 @@
-from hashlib import new
 import sqlite3
 import json
 from models import Orders
@@ -121,13 +120,31 @@ def delete_order(id):
 
 # Update Orders (PUT)
 def update_order(id, new_order):
-    # Iterate the ANIMALS list, but use enumerate() so that
-    # you can access the index value of each item.
-    for index, order in enumerate(ORDERS):
-        if order["id"] == id:
-            # Found the order. Update the value.
-            ORDERS[index] = new_order
-            break 
+    with sqlite3.connect("./kneel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Orders
+            SET
+                style_id = ?,
+                size_id = ?,
+                metal_id = ?,
+                price = ?,
+                timestamp = ?
+        WHERE id = ?
+        """, (new_order['style_id'],
+                new_order['size_id'],
+                new_order['metal_id'],
+                new_order['price'],
+                new_order['timestamp'],
+                id, ))
+
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        return False
+    else:
+        return True
 
 
 
