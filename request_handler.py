@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_metals, get_single_metal, update_metal
 from views import get_all_orders, get_single_order, create_order, delete_order, update_order
 from views import get_all_sizes, get_single_size, update_size
-from views import get_all_styles, get_single_style
+from views import get_all_styles, get_single_style, update_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -169,6 +169,15 @@ class HandleRequests(BaseHTTPRequestHandler):
             else:
                 self._set_headers(404)
         self.wfile.write("".encode())
+
+        if resource == "styles":
+            success = update_style(id, post_body)
+            if success:
+                self._set_headers(204)
+            else:
+                self._set_headers(404)
+        self.wfile.write("".encode())
+
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
